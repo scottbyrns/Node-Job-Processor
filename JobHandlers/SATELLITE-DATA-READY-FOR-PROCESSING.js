@@ -1,7 +1,7 @@
 var tools = require('./JobTools');
 
-var cheerio = require('cheerio'),
-var fs = require('fs')
+var cheerio = require('cheerio');
+var fs = require('fs');
 
 fs.readFile('satelliteList.php.raw', 'utf8', function (err, fileContents) {
 	

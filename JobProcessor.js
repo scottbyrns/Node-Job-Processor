@@ -21,7 +21,8 @@ Router.route = function (route) {
 		  console.log('stdout: ' + data);
 		});
 		child.on('close', function(code) {
-		  console.log(route + ' DID CLOSE WITH ' + (code == 0 ? "NORMALY" : "UNEXPECTEDLY"));
+		  // console.log(route + '-DID-CLOSE-' + (code == 0 ? "NORMALY" : "UNEXPECTEDLY"));
+		  nrp.emit("JOB-LOG", route + '-DID-CLOSE-' + (code == 0 ? "NORMALY" : "UNEXPECTEDLY"));
 		  // Router.routes[route](route);
 		});
 		

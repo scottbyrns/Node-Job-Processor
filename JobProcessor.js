@@ -86,7 +86,7 @@ var NRP = require('node-redis-pubsub')
   
   nrp.on("JOBS", function (m) {
 	  if (m == "QUIT") {
-		  proccess.exit(0);
+		  process.exit(0);
 	  }
   })
   

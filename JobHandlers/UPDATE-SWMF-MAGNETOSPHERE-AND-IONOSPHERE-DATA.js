@@ -10,5 +10,6 @@ tools.emit("EVENT", "UPDATING-SWMF-MAGNETOSPHERE-AND-IONOSPHERE-DATA");
 tools.download(path, "SWMF.gif", function () {
 
 	tools.emit("EVENT", "SWMF-MAGNETOSPHERE-AND-IONOSPHERE-DATA-DID-UPDATE");
+	tools.shutdown();
 
 });

@@ -11,7 +11,7 @@ var JobTools = function () {
 	
 	this.download = function(uri, filename, callback){
 
-		filename = new Date().toISOString() + "-" + filename;
+		// filename = new Date().toISOString() + "-" + filename;
 
 	  request.head(uri, function(err, res, body){
 

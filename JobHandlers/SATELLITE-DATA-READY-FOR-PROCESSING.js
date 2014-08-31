@@ -12,12 +12,16 @@ fs.readFile('satelliteList.php.raw', 'utf8', function (err, fileContents) {
         $ = cheerio.load(fileContents);
 
 		var satellites = [];
+		tools.client.del("SATELLITE-DATA", function () {
+			
+		});
 
         var rows = $("#main").find("tr").each(function(i, elem) {
 			if (i == 0) {
 				return;
 			}
 			var satellite = {};
+
 			
                 $(this).find("td").each(function (i, elem) {
 
@@ -122,26 +126,11 @@ fs.readFile('satelliteList.php.raw', 'utf8', function (err, fileContents) {
                 });
 
 				satellites.push(satellite);
-				
-                // fruits[i] = $(this).text().replace('�', '');
+
+				tools.client.rpush("SATELLITE-DATA", JSON.stringify(satellite), function () {
+
         });
-		
-		var fs = require('fs');
-
-
-		var outputFilename = 'satellites.json';
-
-		fs.writeFile(outputFilename, JSON.stringify(satellites, null, 4), function(err) {
-		    if(err) {
-		      console.log(err);
-		    } else {
-		      console.log("JSON saved to " + outputFilename);
-			  tools.emit("EVENT", "SATELLITE-DATA-DID-UPDATE");
-		    }
-			tools.shutdown();
-		}); 
-		
-
-		
+		tools.emit("EVENT", "SATELLITE-DATA-DID-UPDATE");
+		tools.shutdown();
 
 });

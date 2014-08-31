@@ -3,7 +3,7 @@ var JobTools = function () {
 	this.redis = require('redis');
 
 
-
+	this.client = this.redis.createClient(6379, 'svns.mobi', {});
 
 	var fs = require('fs'),
 	    request = require('request');
@@ -27,7 +27,7 @@ var JobTools = function () {
 
 	this.emit = function (c,m) {
 		if (!this.client) {
-			this.client = this.redis.createClient(6379, 'svns.mobi', {});
+			
 		}
 		this.client.publish(c,m);
 	}

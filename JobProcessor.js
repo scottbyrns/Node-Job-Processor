@@ -84,6 +84,12 @@ var NRP = require('node-redis-pubsub')
 	  Router.route(message);
   });
   
+  nrp.on("JOBS", function (m) {
+	  if (m == "QUIT") {
+		  proccess.exit(0);
+	  }
+  })
+  
   
   
   //

@@ -129,8 +129,11 @@ fs.readFile('satelliteList.php.raw', 'utf8', function (err, fileContents) {
 
 				tools.client.rpush("SATELLITE-DATA", JSON.stringify(satellite), function () {
 
+				});
+				
         });
 		tools.emit("EVENT", "SATELLITE-DATA-DID-UPDATE");
 		tools.shutdown();
+		
 
 });

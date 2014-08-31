@@ -21,7 +21,7 @@ Router.route = function (route) {
 		  console.log('stdout: ' + data);
 		});
 		child.on('close', function(code) {
-		  console.log('closing code: ' + code);
+		  console.log(route + ' DID CLOSE WITH ' + (code == 0 ? "NORMALY" : "UNEXPECTEDLY"));
 		  Router.routes[route](route);
 		});
 		
@@ -45,37 +45,25 @@ var NRP = require('node-redis-pubsub')
 
 
 
-  Router.on("UPDATE-SWMF-MAGNETOSPHERE-AND-IONOSPHERE-DATA", function () {
-	
-  });
+  Router.on("UPDATE-SWMF-MAGNETOSPHERE-AND-IONOSPHERE-DATA");
   
   
   
   
   
-  Router.on("UPDATE-CBX-N0R-0", function () {
-
-  });
+  Router.on("UPDATE-CBX-N0R-0");
   
   
   
   
-  Router.on("UPDATE-SDO-0304", function (route) {
-
-  });
+  Router.on("UPDATE-SDO-0304");
   
   
   
   
-  Router.on("FETCH-SATELLITE-DATA", function () {
-  	
-  });
+  Router.on("FETCH-SATELLITE-DATA");
   
-  Router.on("SATELLITE-DATA-READY-FOR-PROCESSING", function () {
-  	
-  });
-
-  console.log(Router);
+  Router.on("SATELLITE-DATA-READY-FOR-PROCESSING");
 
 
 
@@ -92,39 +80,3 @@ var NRP = require('node-redis-pubsub')
   
   
   
-  //
-//
-//
-// nrp.on("SCHEDULE-EVENT", function (message) {
-//   // say("SCHEDULE-EVENT", message);
-//   });
-//   nrp.on("JOB-NODE-" + nodeUUID, function (message) {
-// 	  // say("JOB-NODE-" + nodeUUID, message);
-//   	  if (message == "SHUTDOWN") {
-//   		  nrp.emit("EVENT", "JOBE-NODE-" + nodeUUID + "-SHUTTING-DOWN");
-//   		  exit(0);
-//   	  }
-// 	  if (message == "PAUSE") {
-// 		  paused = true;
-// 		  nrp.emit("EVENT", "JOB-NODE-" + nodeUUID + "-DID-PAUSE");
-// 	  }
-// 	  if (message == "RESUME" || message == "START") {
-// 		  paused = false;
-// 		  nrp.emit("EVENT", "JOB-NODE-" + nodeUUID + "-DID-" + message);
-// 	  }
-//
-// 	  if (message == "HELP") {
-// 		  nrp.emit("EVENT", {
-// 			  message: "JOB-NODE-" + nodeUUID,
-// 			  inputs: {
-// 				  system: ["PAUSE", "RESUME", "START", "SHUTDOWN"],
-// 				  space: ["FETCH-SATELLITE-DATA", "UPDATE-SDO-0304"]
-// 			  }
-// 		  });
-// 	  }
-//   });
-//
-//   nrp.emit("EVENT", "NODE-" + nodeUUID + "-JOINED-JOB-POOL");
-//
-//
-//

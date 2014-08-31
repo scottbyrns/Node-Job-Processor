@@ -1,7 +1,7 @@
 var JobTools = function () {
 
 	this.redis = require('redis');
-	this.client = this.redis.createClient(6379, 'svns.mobi', {});
+
 
 
 
@@ -26,16 +26,21 @@ var JobTools = function () {
 	};
 
 	this.emit = function (c,m) {
+		if (!this.client) {
+			this.client = this.redis.createClient(6379, 'svns.mobi', {});
+		}
 		this.client.publish(c,m);
 	}
 
 	this.shutdown = function () {
 
-		this.client.end();
-		this.client.quit();
+		if (this.client) {
+			this.client.end();
+			this.client.quit();
+		}
 		process.exit(0);
 		
 	}
 };
 
-modules.export = new JobTools();
+module.exports = new JobTools();

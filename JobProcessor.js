@@ -5,7 +5,7 @@ var Router = {
 }
 
 Router.on = function (route, destination) {
-	Router.routes[route] = destination;
+	Router.routes[route] = true;//destination;
 }
 
 Router.route = function (route) {
@@ -22,7 +22,7 @@ Router.route = function (route) {
 		});
 		child.on('close', function(code) {
 		  console.log(route + ' DID CLOSE WITH ' + (code == 0 ? "NORMALY" : "UNEXPECTEDLY"));
-		  Router.routes[route](route);
+		  // Router.routes[route](route);
 		});
 		
 

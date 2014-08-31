@@ -136,6 +136,7 @@ fs.readFile('satelliteList.php.raw', 'utf8', function (err, fileContents) {
 		      console.log(err);
 		    } else {
 		      console.log("JSON saved to " + outputFilename);
+			  tools.emit("EVENT", "SATELLITE-DATA-DID-UPDATE");
 		    }
 			tools.shutdown();
 		}); 

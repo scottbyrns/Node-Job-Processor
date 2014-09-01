@@ -188,5 +188,5 @@ for (var i = 0, len = points.length; i < len; i += 1) {
 
 
 
-tools.emit("JOB-LOG", "NEXRAD-SITES-WERE-STORED-IN-PERSISTENCE");
+tools.emit("EVENT", "NEXRAD-SITES-WERE-STORED-IN-PERSISTENCE");
 tools.shutdown();

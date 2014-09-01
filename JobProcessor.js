@@ -50,7 +50,7 @@ var NRP = require('node-redis-pubsub')
   
   
   
-  
+  Router.on("PERSIST-NEXRAD-SITES");
   
   Router.on("UPDATE-CBX-N0R-0");
   

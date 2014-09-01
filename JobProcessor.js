@@ -49,9 +49,10 @@ var NRP = require('node-redis-pubsub')
   Router.on("UPDATE-SWMF-MAGNETOSPHERE-AND-IONOSPHERE-DATA");
   
   
-  
+
   Router.on("PERSIST-NEXRAD-SITES");
-  
+  Router.on("FETCH-NEXRAD-RADAR-SWEEPS");
+    
   Router.on("UPDATE-CBX-N0R-0");
   
   

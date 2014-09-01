@@ -171,22 +171,37 @@ for (var i = 0, len = points.length; i < len; i += 1) {
 	var point = points[i];
 	
 	var elements = point.split('|');
-	tools.client.rpush("NEXRAD-SITE", JSON.stringify({
-		site: elements[3],
-		altitude: elements[2],
-		latitude: elements[0],
-		longitude: elements[1]
-	}), function () {
 
-	});
 	
+	if (i + 1 == len) {
+		tools.client.rpush("NEXRAD-SITE", JSON.stringify({
+			site: elements[3],
+			altitude: elements[2],
+			latitude: elements[0],
+			longitude: elements[1]
+		}), function () {
+
+
+			tools.emit("EVENT", "NEXRAD-SITES-WERE-STORED-IN-PERSISTENCE");
+
+			tools.shutdown();
+			
+			
+		});
+	}
+	else {
+		tools.client.rpush("NEXRAD-SITE", JSON.stringify({
+			site: elements[3],
+			altitude: elements[2],
+			latitude: elements[0],
+			longitude: elements[1]
+		}), function () {
+
+		});
+	}
 	
 	
 }
 
 
 
-
-
-tools.emit("EVENT", "NEXRAD-SITES-WERE-STORED-IN-PERSISTENCE");
-tools.shutdown();

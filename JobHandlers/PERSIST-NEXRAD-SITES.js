@@ -167,6 +167,8 @@ var points = [
 	'32.318000000|-90.080000000|87.2|KJAN'
 ];
 
+tools.client.del("NEXRAD-SITE");
+
 for (var i = 0, len = points.length; i < len; i += 1) {
 	var point = points[i];
 	

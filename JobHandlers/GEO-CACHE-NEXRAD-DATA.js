@@ -11,7 +11,7 @@ tools.client.llen("NEXRAD-SITE", function (err, len) {
 	for (var i = 0; i < len; i += 1) {
 	
 		tools.client.lindex("NEXRAD-SITE", i, function (err, result) {
-	
+			
 			if (err) {
 				return console.error(err);
 			}
@@ -23,6 +23,10 @@ tools.client.llen("NEXRAD-SITE", function (err, len) {
 					return console.error(err);
 				}
 				console.log("got pixels", pixels.shape.slice());
+				var shape = pixels.shape.slice();
+				
+				console.log(pixels);
+				
 			});
 			
 						//

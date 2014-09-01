@@ -19,13 +19,13 @@ tools.client.llen("NEXRAD-SITE", function (err, len) {
 		
 			var url = "http://radar.weather.gov/ridge/RadarImg/N0R/" + siteKey + "_N0R_0.gif";
 		
-			tools.download(url, "/tmp/" + siteKey + "-N0R.gif", function () {
-				console.log("Did fetch NEXRAD site: " + siteKey);
-				tools.emit("EVENT", "DID-FETCH-NEXRAD-" + siteKey);
+			tools.download(url, "/tmp/" + site.site + "-N0R.gif", function () {
+				console.log("Did fetch NEXRAD site: " + site.site);
+				tools.emit("EVENT", "DID-FETCH-NEXRAD-" + site.site);
 				counter -= 1;
 				if (counter == 0) {
 					tools.emit("EVENT", "NEXRAD-SWEEP-WAS-FETCHED");
-					tools.shutdown();	
+					tools.shutdown();
 				}
 			});
 

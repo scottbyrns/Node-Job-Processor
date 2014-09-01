@@ -61,7 +61,7 @@ var NRP = require('node-redis-pubsub')
   Router.on("UPDATE-SDO-0304");
   
   
-  
+  Router.on("GEO-CACHE-NEXRAD-DATA");
   
   Router.on("FETCH-SATELLITE-DATA");
   

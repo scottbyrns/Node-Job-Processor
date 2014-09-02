@@ -4,7 +4,7 @@ var xml2js = require('xml2js');
 
 var parser = new xml2js.Parser();
 
-
+var tools = require('./JobHandlers/JobTools');
 
 var Router = {
 	routes: {}
@@ -49,11 +49,12 @@ var NRP = require('node-redis-pubsub')
 
 
 
-
+  var handlers;
 
 
 fs.readFile(__dirname + '/JobHandlers.xml', function(err, data) {
     parser.parseString(data, function (err, result) {
+		handlers = result.handlers.handler;
 		// console.error(err);
 		//         console.dir(result);
 		//         console.log('Done');
@@ -64,6 +65,39 @@ fs.readFile(__dirname + '/JobHandlers.xml', function(err, data) {
 		}
 		
     });
+});
+
+
+
+var a = tools.client.llen('JOB-PROCESSOR-STACK', function (err, count) {
+	var processorId = count;
+
+	nrp.on("JOB-PROCESSOR-" + processorId, function (m) {
+    	  if (m == "QUIT") {
+			  console.log("Quitting by command.");
+    		  process.exit(0);
+    	  }
+		  Router.route(message);
+	});
+
+    nrp.on("EVENT", function (message) {
+  	  Router.route(message);
+    });
+
+    nrp.on("LIST-AVAILABLE-JOBS", function (message) {
+  	  if (message === processorId) {
+		  for (var i = 0, len = handlers.length; i < len; i += 1) {
+			  tools.client.publish("AVAILABLE-JOB", handlers[i].event);
+		  }
+  	  }
+    });
+	
+	tools.client.rpush('JOB-PROCESSOR-STACK', 1, function () {
+	
+		tools.client.publish("JOB-PROCESSORS", processorId);
+	
+	});
+	
 });
 
 
@@ -81,16 +115,4 @@ fs.readFile(__dirname + '/JobHandlers.xml', function(err, data) {
   // Router.on("SATELLITE-DATA-READY-FOR-PROCESSING");
 
 
-  
-  nrp.on("EVENT", function (message) {
-	  Router.route(message);
-  });
-  
-  nrp.on("JOBS", function (m) {
-	  if (m == "QUIT") {
-		  process.exit(0);
-	  }
-  })
-  
-  
   

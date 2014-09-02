@@ -62,4 +62,10 @@
 			
 		</description>
 	</handler>
+	<handler>
+		<event>MAP-NEXRAD-SITES</event>
+		<description>
+			
+		</description>
+	</handler>
 </handlers>

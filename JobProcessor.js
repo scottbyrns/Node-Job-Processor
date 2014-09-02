@@ -1,5 +1,11 @@
 var fs = require('fs');
 
+var xml2js = require('xml2js');
+
+var parser = new xml2js.Parser();
+
+
+
 var Router = {
 	routes: {}
 }
@@ -46,29 +52,33 @@ var NRP = require('node-redis-pubsub')
 
 
 
-  Router.on("UPDATE-SWMF-MAGNETOSPHERE-AND-IONOSPHERE-DATA");
-  
-  
+fs.readFile(__dirname + '/JobHandlers.xml', function(err, data) {
+    parser.parseString(data, function (err, result) {
+		// console.error(err);
+		//         console.dir(result);
+		//         console.log('Done');
+		
+		for (var i = 0, len = result.handlers.handler.length; i < len; i += 1) {
+			console.log("Registering route: ", result.handlers.handler[i].event[0]);
+			Router.on(result.handlers.handler[i].event[0]);
+		}
+		
+    });
+});
 
-  Router.on("PERSIST-NEXRAD-SITES");
-  Router.on("FETCH-NEXRAD-RADAR-SWEEPS");
-  Router.on("PUT-NEXRAD-ON-WEBSITE");
-  Router.on("FETCH-NEXRAD-RADAR-COVERAGE-DATA");
-    
-  Router.on("UPDATE-CBX-N0R-0");
-  
-  
-  
-  
-  Router.on("UPDATE-SDO-0304");
-  
-  
-  Router.on("GEO-CACHE-NEXRAD-DATA");
-  
-  Router.on("FETCH-SATELLITE-DATA");
-  
-  Router.on("SATELLITE-DATA-READY-FOR-PROCESSING");
 
+
+
+  // Router.on("UPDATE-SWMF-MAGNETOSPHERE-AND-IONOSPHERE-DATA");
+  // Router.on("PERSIST-NEXRAD-SITES");
+  // Router.on("FETCH-NEXRAD-RADAR-SWEEPS");
+  // Router.on("PUT-NEXRAD-ON-WEBSITE");
+  // Router.on("FETCH-NEXRAD-RADAR-COVERAGE-DATA");
+  // Router.on("UPDATE-CBX-N0R-0");
+  // Router.on("UPDATE-SDO-0304");
+  // Router.on("GEO-CACHE-NEXRAD-DATA");
+  // Router.on("FETCH-SATELLITE-DATA");
+  // Router.on("SATELLITE-DATA-READY-FOR-PROCESSING");
 
 
   

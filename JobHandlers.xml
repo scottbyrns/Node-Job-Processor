@@ -17,25 +17,49 @@
 		<event>UPDATE-SDO-0304</event>
 		<description>
 			Fetch the latest 304 nm photos of the Sun from the Solar Dynamic Observatory.
-		<description>
+		</description>
 	</handler>
 	<handler>
 		<event>FETCH-SATELLITE-DATA</event>
 		<description>
 			Fetch a set of calculated positions for many satellites in orbit around earth.
-		<description>
+		</description>
 	</handler>
 	<handler>
 		<event>SATELLITE-DATA-READY-FOR-PROCESSING</event>
 		<description>
 			Scrape the fetched satellite data for structured values.
 			Persist this data in REDIS.
-		<description>
+		</description>
 	</handler>
 	<handler>
 		<event>PERSIST-NEXRAD-SITES</event>
 		<description>
 			Dumps a JSON blob of NEXRAD site locations and altitudes into REDIS
+		</description>
+	</handler>
+	<handler>
+		<event>FETCH-NEXRAD-RADAR-SWEEPS</event>
 		<description>
+			
+		</description>
+	</handler>
+	<handler>
+		<event>PUT-NEXRAD-ON-WEBSITE</event>
+		<description>
+			
+		</description>
+	</handler>
+	<handler>
+		<event>FETCH-NEXRAD-RADAR-COVERAGE-DATA</event>
+		<description>
+			
+		</description>
+	</handler>
+	<handler>
+		<event>GEO-CACHE-NEXRAD-DATA</event>
+		<description>
+			
+		</description>
 	</handler>
 </handlers>

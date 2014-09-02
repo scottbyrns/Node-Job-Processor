@@ -53,6 +53,7 @@ var NRP = require('node-redis-pubsub')
   Router.on("PERSIST-NEXRAD-SITES");
   Router.on("FETCH-NEXRAD-RADAR-SWEEPS");
   Router.on("PUT-NEXRAD-ON-WEBSITE");
+  Router.on("FETCH-NEXRAD-RADAR-COVERAGE-DATA");
     
   Router.on("UPDATE-CBX-N0R-0");
   

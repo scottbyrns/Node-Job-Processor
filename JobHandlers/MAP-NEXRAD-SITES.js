@@ -1,5 +1,26 @@
+var tools = require('./JobTools');
+var databaseUrl = "mongodb://svns.mobi:27017/geodb"; // "username:password@example.com/mydb"
+// var collections = ["Accounts", "Robots"]
+var pixels = require("get-pixels");
+
+var Db = require('mongodb').Db;
+
+// var documents = [
+//     {name: "Awesome burger bar", loc: [50, 50]}
+//   , {name: "Not an Awesome burger bar", loc: [10, 10]}
+//   , {name: "More or less an Awesome burger bar", loc: [45, 45]}
+// ]
+
+var unmap = function (lat, lon, xllcorner, yllcorner) {
+	var ycoord = -1 * (((la/xyperpixel) - xllcorner)+191-1)
+	var xcoord = (((yllcorner-lon)/xyperpixel) / -1)+158-1
+	return {
+		x:xcoord,
+		y:ycoord
+	}
+}
+
 var map = function (Mi, Lat, xyperpixel, xllcorner, yllcorner, xcoord, ycoord) {
-	
     var maxMix = Mi-1;
   	if (Lat<32.57) var maxMiy = Mi-1;
   	else	var maxMiy = Mi+Math.round(((Lat-32.57)*5.7)/2);
@@ -33,17 +54,17 @@ var map = function (Mi, Lat, xyperpixel, xllcorner, yllcorner, xcoord, ycoord) {
 		ylon= -(xcoord-158+1)*xyperpixel;
 
 
-		if (Math.abs(xMi)>maxMix || Math.abs(yMi)>maxMiy) {
-			
-			return {
-				z: 0,
-				a: 0,
-				a2: 0,
-				lony = 0,
-				lotx = 0
-			};
-			
-		} else {
+		// if (Math.abs(xMi)>maxMix || Math.abs(yMi)>maxMiy) {
+		//
+		// 	return {
+		// 		z: 0,
+		// 		a: 0,
+		// 		a2: 0,
+		// 		lony : 0,
+		// 		lotx : 0
+		// 	};
+		//
+		// } else {
 			xx=xMi-xMiOrigin;
 			yy=yMi-yMiOrigin;
 			la=(xllcorner-xlat).toFixed(3);
@@ -76,16 +97,162 @@ var map = function (Mi, Lat, xyperpixel, xllcorner, yllcorner, xcoord, ycoord) {
 			if (aa>=326.25 && aa<348.75) var aatxt = 'North Northwest';
 			
 			return {
-				z: zz,
-				a: aatxt,
-				a2: aa,
-				lony = lo,
-				lotx = la
+				distance: zz,
+				direction: aatxt,
+				degrees: aa,
+				lon : lo,
+				lat : la
 			};
 			// document.myform.z.value = zz + ' Mi Away';
 			// document.myform.a.value = aatxt;
 			// document.myform.a2.value = aa + ' Degrees';
 			// document.myform.lony.value = lo;
 			// document.myform.latx.value = la;
-		}
+		// }
 };
+Db.connect(databaseUrl, function(err, db) {
+    if(err) return console.dir(err)
+    var collection = db.collection('NEXRAD');
+
+
+
+
+tools.client.llen("NEXRAD-SITE", function (err, len) {
+
+	var counter = len;
+
+	// for (var i = 0; i < len; i += 1) {
+	//
+	// }
+
+
+	loadData(counter-1);
+	
+});
+
+var loadData = function (z) {
+	
+	if (z<0) {return;}
+
+	tools.client.lindex("NEXRAD-SITE", z, function (err, result) {
+		
+		if (err) {
+			return console.error(err);
+		}
+		
+		var site = JSON.parse(result);
+		
+		// var rawData = [];
+		try {
+		
+			pixels("/tmp/" + site.site + "-N0R.gif", function (err, pixels) {
+				if (err) {
+					loadData(--z);
+					return console.error(err);
+				}
+				console.log("got pixels", pixels.shape.slice());
+				var shape = pixels.shape.slice();
+			
+			    //Get array shape
+			     var nx = pixels.shape[0], 
+			         ny = pixels.shape[1];
+					 var raw = [];
+
+			     //Loop over all cells
+			     for(var i=1; i<nx-1; ++i) {
+			       for(var j=1; j<ny-1; ++j) {
+				   
+					   var coordinate = map(site.coverage.mi, site.coverage.lat, site.coverage.xyperpixel, site.coverage.xllcorner, site.coverage.yllcorner, i, j);
+					   var pixel = [];
+					   for (var k = 0; k < 4; k += 1) {
+						   pixel[k] = pixels.get(i, j, k);
+					   }
+					   if (coordinate.lat == "" || coordinate.lon == "") {
+				   	
+					   }
+					   else {
+				   
+						   raw.push({
+		 						   reading: {
+		 						   	 							   pixel: pixel
+		 						   },
+		 						   reference: coordinate,
+		 						   geo: {
+									   type: "Point",
+									   coordinates: [1*coordinate.lat, 1*coordinate.lon]
+		 						   }
+		  					   });
+					   }
+
+					   					   //
+					   // rawData.push({
+					   // 						   reading: {
+					   // 							   pixel: pixel
+					   // 						   },
+					   // 						   reference: coordinate,
+					   // 						   loc: [coordinate.lat, coordinate.lon]
+					   // })
+				   
+			       }
+			     }
+			 
+
+					 // MONGO
+
+					     collection.ensureIndex({"geo.loc": "2dsphere"}, {min: -500, max: 500, w:1}, function(err, result) {
+					       if(err) return console.dir(err);
+
+
+				     	  				       collection.insert(raw, {w:1}, function(err, result) {
+				     	  				         if(err) return console.dir(err)
+											 
+												 loadData(--z);
+				     	  				 		  //
+				     	  				 		  // 				 	    db.collection('places').find({loc: {$near: [50,50], $maxDistance: 10}}).toArray(function(err, docs) {
+				     	  				 		  // 				 	      if(err) return console.dir(err)
+				     	  				 		  // // console.log(docs);
+				     	  				 		  // 				 	      // assert.equal(docs.length, 2);
+				     	  				 		  // 				 	    });
+
+				     	  				       });
+					     });
+
+			 
+
+			 
+			 
+			 
+			
+			});
+		
+		}
+		catch (e) {
+			console.error(e);
+			loadData(--z);
+		}
+	});
+
+	
+}
+//
+//
+// Db.connect(databaseUrl, function(err, db) {
+//     if(err) return console.dir(err)
+//     var collection = db.collection('places');
+//
+//     collection.ensureIndex({loc: "2d"}, {min: -500, max: 500, w:1}, function(err, result) {
+//       if(err) return console.dir(err);
+//
+//       collection.insert(documents, {w:1}, function(err, result) {
+//         if(err) return console.dir(err)
+//
+// 	    db.collection('places').find({loc: {$near: [50,50], $maxDistance: 10}}).toArray(function(err, docs) {
+// 	      if(err) return console.dir(err)
+// 		  // console.log(docs);
+// 	      // assert.equal(docs.length, 2);
+// 	    });
+//
+//       });
+//     });
+// });
+});

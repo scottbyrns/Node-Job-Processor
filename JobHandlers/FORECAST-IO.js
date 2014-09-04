@@ -30,7 +30,7 @@ server.get('/track/:lat/:lon', function (req, res, next) {
 		var data = JSON.parse(body);
 		var out = "There is a " + ~~(data.currently.precipProbability * 100) + "% chance of rain.\n" + data.minutely.summary;
 		console.log(out);
-		if (data.currently.precipProbability > -0.9 && broadcastLimit > 0) {
+		if (data.currently.precipProbability > 0.85 && broadcastLimit > 0) {
 			//data.minutely.summary + ".\nTemp° is " + data.currently.temperature + 
 			var out = "There is a " + ~~(data.currently.precipProbability * 100) + "% chance of rain.\n" + data.minutely.summary;
 			console.log(out);

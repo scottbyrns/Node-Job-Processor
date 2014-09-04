@@ -32,15 +32,17 @@ server.get('/track/:lat/:lon', function (req, res, next) {
 		console.log(out);
 		if (data.currently.precipProbability > 0.85 && broadcastLimit > 0) {
 			//data.minutely.summary + ".\nTemp° is " + data.currently.temperature + 
-			var out = "There is a " + ~~(data.currently.precipProbability * 100) + "% chance of rain.\n" + data.minutely.summary;
+			out = "There is a " + ~~(data.currently.precipProbability * 100) + "% chance of rain.\n" + data.minutely.summary;
 			console.log(out);
 			broadcastLimit -= 1;
 			tools.client.publish("SEND-SMS", "+12088678553:" + out);			
 		}
+		res.send(out);
+		next();
 	});
 	
-  res.send(req.params);
-  return next();
+  // res.send(req.params);
+  // return next();
 });
 
 server.listen(8147, function () {
